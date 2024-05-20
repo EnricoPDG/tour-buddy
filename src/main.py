@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import user_route
+from src.routers import user_route
 from mangum import Mangum
 
 app = FastAPI()

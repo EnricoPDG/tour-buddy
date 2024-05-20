@@ -5,3 +5,5 @@ from mangum import Mangum
 app = FastAPI()
 
 app.include_router(user_route.router)
+
+handler = Mangum(app)

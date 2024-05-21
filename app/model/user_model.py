@@ -1,16 +1,13 @@
 import enum
-from src.model.BaseModel import EntityMeta
-from sqlalchemy import Column, Integer, String, Enum, Date, Text
+from database import Base
+from sqlalchemy import Column, Integer, String, Enum, Date, Text, BigInteger, UUID
+from enums import UserTypeEnum
+from uuid import uuid4
 
-
-class UserTypeEnum(enum.Enum):
-    tourist = 'turista'
-    guide = 'guia'
-
-
-class User(EntityMeta):
+class UserModel(Base):
     __tablename__ = 'users'
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    
+    id = Column(UUID(as_uuid=True),primary_key=True, default=uuid4)
     email = Column(String(255), nullable=False)
     username = Column(String(60), nullable=False)
     type = Column(Enum(UserTypeEnum))

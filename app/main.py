@@ -9,4 +9,6 @@ app = FastAPI()
 
 app.include_router(user_route.router, tags=["User Route"])
 
-handler = Mangum(app)
+@app.get("/")
+def teste():
+    return {"olá": "mundo"}

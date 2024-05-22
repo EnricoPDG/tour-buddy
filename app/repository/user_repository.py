@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from loguru import logger
 from model import UserModel
 from schema import UserSchemaRequest
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 class UserRepository:
     @staticmethod
@@ -33,3 +33,8 @@ class UserRepository:
 
         logger.debug(f"User created in database: {user_model}")
         return id
+    
+
+    @staticmethod
+    def get_user(db: Session, id: UUID):
+        return db.query(UserModel).filter_by(id=id).first()

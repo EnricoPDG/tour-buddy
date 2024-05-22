@@ -1,4 +1,3 @@
-import enum
 from database import Base
 from sqlalchemy import Column, Integer, String, Enum, Date, Text, BigInteger, UUID
 from enums import UserTypeEnum

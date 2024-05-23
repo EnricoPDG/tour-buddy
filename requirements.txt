@@ -1,2 +1,4 @@
-fastapi
+fastapi~=0.110.0
 mangum
+SQLAlchemy~=2.0.30
+pydantic~=2.6.4

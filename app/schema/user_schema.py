@@ -12,8 +12,8 @@ class UserSchemaBase(BaseModel):
     description: str | None
     cellphone_number: str
     birthday: date
-    cpf: str
-    avatar_url: str
+    cpf: str | None
+    avatar_url: str | None
     state: str
     city: str
 

@@ -1,4 +1,4 @@
 from user import User, UserType
-from routes import Route, DestinyRoute, InterestedDestiny, RouteImage
-from rating import Rating
-from schedule import Schedule
+from guidance import Route, GuidanceDestination, InterestedDestiny, GuidanceImage
+from guidance_rating import Rating
+from guidance_schedule import Schedule

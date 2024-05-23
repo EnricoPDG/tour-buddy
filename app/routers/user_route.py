@@ -36,7 +36,7 @@ async def create_user(user: UserSchemaRequest, db: Session = Depends(get_db)):
     )
 
 
-@router.get("/users/:id", response_model=UserSchemaResponse, status_code=201)
+@router.get("/users/profile/:id", response_model=UserSchemaResponse, status_code=201)
 async def create_user(id: UUID, db: Session = Depends(get_db)):
     try:
         logger.debug(f"getting user by id: {id}")

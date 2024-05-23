@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from enums import UserTypeEnum
 from datetime import date
 from uuid import UUID
+from typing import Optional
 
 
 class UserSchemaBase(BaseModel):
@@ -9,11 +10,11 @@ class UserSchemaBase(BaseModel):
     username: str
     type: UserTypeEnum
     name: str
-    description: str | None
+    description: Optional[str] = None 
     cellphone_number: str
     birthday: date
-    cpf: str | None
-    avatar_url: str | None
+    cpf: Optional[str] = None
+    avatar_url: Optional[str] = None
     state: str
     city: str
 

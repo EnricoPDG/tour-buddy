@@ -1,6 +1,6 @@
 from sqlalchemy import String, Column
 
-from app.database import Base
+from database import Base
 
 
 class IntendedDestination(Base):

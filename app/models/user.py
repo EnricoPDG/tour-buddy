@@ -1,7 +1,7 @@
 from uuid import uuid4
 from sqlalchemy import Column, String, Enum, Date, Text, UUID
-from app.database import Base
-from app.enums import UserTypeEnum
+from database import Base
+from enums import UserTypeEnum
 
 
 class User(Base):

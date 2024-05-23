@@ -1,15 +1,15 @@
 from sqlalchemy.orm import Session
 from loguru import logger
-from model import UserModel
+from models import User
 from schema import UserSchemaRequest
 from uuid import uuid4, UUID
 
 class UserRepository:
     @staticmethod
     def save(db: Session, user_schema: UserSchemaRequest) -> id:
-        logger.debug(f"Setting UserModel.")
+        logger.debug(f"Setting User.")
         id = uuid4()
-        user_model = UserModel(
+        user_model = User(
             id=id,
             email=user_schema.email,
             name=user_schema.name,
@@ -23,7 +23,7 @@ class UserRepository:
             city=user_schema.city
         )
 
-        logger.debug(f"UserModel created: {user_model.__dict__}")
+        logger.debug(f"User created: {user_model.__dict__}")
 
         if user_model.id:
             db.merge(user_model)
@@ -37,4 +37,4 @@ class UserRepository:
 
     @staticmethod
     def get_user(db: Session, id: UUID):
-        return db.query(UserModel).filter_by(id=id).first()
+        return db.query(User).filter_by(id=id).first()

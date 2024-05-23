@@ -1,6 +1,6 @@
 from uuid import uuid4
 from sqlalchemy import Column, String, Float, ForeignKey, UUID
-from app.database import Base
+from database import Base
 
 
 class Guidance(Base):

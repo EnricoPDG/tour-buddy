@@ -165,3 +165,4 @@ cython_debug/
 .DS_Store
 lambda_function
 lambda_function.zip
+setup_db.sh 

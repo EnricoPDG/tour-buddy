@@ -14,6 +14,7 @@ class UserRepository:
             id=id,
             email=user_schema.email,
             name=user_schema.name,
+            description=user_schema.description,
             username=user_schema.username,
             type=user_schema.type,
             cellphone_number=user_schema.cellphone_number,

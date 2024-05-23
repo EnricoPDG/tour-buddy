@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from enums import UserTypeEnum
-from datetime import datetime
+from datetime import date
 from uuid import UUID
 
 class UserSchemaBase(BaseModel):
@@ -9,11 +9,13 @@ class UserSchemaBase(BaseModel):
     type: UserTypeEnum
     name: str
     cellphone_number: str
-    birthday: datetime
+    birthday: date
     cpf: str
     avatar_url: str
     state: str
     city: str
+
+    
 
 class UserSchemaRequest(UserSchemaBase):
     ...

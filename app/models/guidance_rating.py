@@ -4,8 +4,8 @@ from database import Base
 
 
 class GuidanceRating(Base):
-    __tablename__ = 'guidance_rating'
+    __tablename__ = "guidance_rating"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     rating = Column(Float, nullable=False)
-    evaluatorId = Column(UUID(as_uuid=True), ForeignKey('user.id'), default=uuid4)
-    guidanceId = Column(UUID(as_uuid=True), ForeignKey('guidance.id'), default=uuid4)
+    evaluatorId = Column(UUID(as_uuid=True), ForeignKey("user.id"), default=uuid4)
+    guidanceId = Column(UUID(as_uuid=True), ForeignKey("guidance.id"), default=uuid4)

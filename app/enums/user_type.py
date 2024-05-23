@@ -1,6 +1,6 @@
-from enum import Enum 
+from enum import Enum
 
 
 class UserTypeEnum(Enum):
-    tourist = 'turista'
-    guide = 'guia'
+    tourist = "turista"
+    guide = "guia"

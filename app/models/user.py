@@ -5,13 +5,14 @@ from enums import UserTypeEnum
 
 
 class User(Base):
-    __tablename__ = 'user'
+    __tablename__ = "user"
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     email = Column(String(255), nullable=False)
     username = Column(String(60), nullable=False)
     type = Column(Enum(UserTypeEnum))
     name = Column(String(255), nullable=False)
-    description = Column(Text, nullable=False)
+    description = Column(Text, nullable=True)
     cellphone_number = Column(String(14), nullable=False)
     birthday = Column(Date, nullable=False)
     cpf = Column(String(11), nullable=True)

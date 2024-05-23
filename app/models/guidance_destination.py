@@ -4,7 +4,7 @@ from database import Base
 
 
 class GuidanceDestination(Base):
-    __tablename__ = 'guidance_destination'
+    __tablename__ = "guidance_destination"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     description = Column(String, nullable=False)
     cep = Column(String, nullable=False)
@@ -13,4 +13,4 @@ class GuidanceDestination(Base):
     street = Column(String, nullable=False)
     number = Column(String, nullable=False)
     complement = Column(String, nullable=True)
-    guidanceId = Column(UUID(as_uuid=True), ForeignKey('guidance.id'), default=uuid4)
+    guidanceId = Column(UUID(as_uuid=True), ForeignKey("guidance.id"), default=uuid4)

@@ -4,7 +4,7 @@ from database import Base
 
 
 class Guidance(Base):
-    __tablename__ = 'guidance'
+    __tablename__ = "guidance"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
@@ -12,4 +12,4 @@ class Guidance(Base):
     city = Column(String, nullable=False)
     approximatelyValue = Column(Float, nullable=True)
     rating = Column(Float, nullable=False)
-    ownerId = Column(UUID(as_uuid=True), ForeignKey('user.id'), default=uuid4)
+    ownerId = Column(UUID(as_uuid=True), ForeignKey("user.id"), default=uuid4)

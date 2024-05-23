@@ -4,6 +4,7 @@ from models import User
 from schema import UserSchemaRequest
 from uuid import uuid4, UUID
 
+
 class UserRepository:
     @staticmethod
     def save(db: Session, user_schema: UserSchemaRequest) -> id:
@@ -20,7 +21,7 @@ class UserRepository:
             cpf=user_schema.cpf,
             avatar_url=user_schema.avatar_url,
             state=user_schema.state,
-            city=user_schema.city
+            city=user_schema.city,
         )
 
         logger.debug(f"User created: {user_model.__dict__}")
@@ -33,7 +34,6 @@ class UserRepository:
 
         logger.debug(f"User created in database: {user_model}")
         return id
-    
 
     @staticmethod
     def get_user(db: Session, id: UUID):

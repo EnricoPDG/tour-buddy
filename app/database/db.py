@@ -15,13 +15,14 @@ url_obj = URL.create(
     password=password,
     host=endpoint,
     port=int(port),
-    database=database
+    database=database,
 )
 
 engine = create_engine(url=url_obj)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
 
 def get_db():
     db = SessionLocal()

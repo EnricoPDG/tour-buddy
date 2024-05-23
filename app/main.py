@@ -8,6 +8,7 @@ app = FastAPI()
 
 app.include_router(user_route.router, tags=["User Route"])
 
+
 @app.get("/")
 def teste():
     return {"olá": "mundo"}

@@ -11,4 +11,4 @@ class GuidanceSchedule(Base):
     confirmedByTourist = Column(Boolean, nullable=False, default=False)
     guideId = Column(UUID(as_uuid=True), ForeignKey("user.id"), default=uuid4)
     touristId = Column(UUID(as_uuid=True), ForeignKey("user.id"), default=uuid4)
-    # guidanceId = Column(UUID(as_uuid=True), ForeignKey('route.id'), default=uuid4)
+    guidanceId = Column(UUID(as_uuid=True), ForeignKey('guidance.id'), default=uuid4)

@@ -2,6 +2,10 @@ from sqlalchemy import create_engine, URL
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
+from dotenv import load_dotenv
+from pathlib import Path
+
+load_dotenv(Path(".env"))
 
 user = os.environ["DB_USER"]
 password = os.environ["DB_PASSWORD"]

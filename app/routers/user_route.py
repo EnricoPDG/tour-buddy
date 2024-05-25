@@ -4,12 +4,13 @@ from schema import UserSchemaRequest, UserSchemaResponse
 from repository import UserRepository
 from database import get_db
 from loguru import logger
-from uuid import UUID
 
-router = APIRouter()
+router = APIRouter(
+    prefix="users"
+)
 
 
-@router.post("/users", response_model=UserSchemaResponse, status_code=201)
+@router.post("/", response_model=UserSchemaResponse, status_code=201)
 async def create_user(user: UserSchemaRequest, db: Session = Depends(get_db)):
     try:
         logger.debug(f"creating user: {user}")
@@ -36,7 +37,7 @@ async def create_user(user: UserSchemaRequest, db: Session = Depends(get_db)):
     )
 
 
-@router.get("/users/profile/{email}", response_model=UserSchemaResponse, status_code=200)
+@router.get("/profile/{email}", response_model=UserSchemaResponse, status_code=200)
 async def fetch_user_profile_by_id(email: str, db: Session = Depends(get_db)):
     try:
         user = UserRepository.get_user(db=db, email=email)

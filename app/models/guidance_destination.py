@@ -11,6 +11,7 @@ class GuidanceDestination(Base):
     state = Column(String, nullable=False)
     city = Column(String, nullable=False)
     street = Column(String, nullable=False)
+    neighborhood = Column(String, nullable=False)
     number = Column(String, nullable=False)
     complement = Column(String, nullable=True)
     guidanceId = Column(UUID(as_uuid=True), ForeignKey("guidance.id"), default=uuid4)

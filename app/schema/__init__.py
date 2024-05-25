@@ -1,1 +1,4 @@
 from .user_schema import UserSchemaBase, UserSchemaRequest, UserSchemaResponse
+from .guidance_schema import GuidanceSchemaBase, GuidanceSchemaRequest, GuidanceSchemaResponse
+from .guidance_destination_schema import GuidanceDestinationSchemaBase, GuidanceDestinationSchemaRequest, GuidanceDestinationSchemaResponse
+from .guidance_image_schema import GuidanceImageSchemaBase, GuidanceImageSchemaRequest, GuidanceImageSchemaResponse

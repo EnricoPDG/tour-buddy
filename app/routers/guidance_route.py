@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from schema import GuidanceSchemaRequest, GuidanceSchemaResponse 
+from schema import GuidanceSchemaResponse, UserSchemaResponse 
+from typing import List
 from repository import GuidanceRepository
 from database import get_db
 from loguru import logger
@@ -11,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=[GuidanceSchemaResponse], status_code=201)
+@router.post("/", response_model=List[GuidanceSchemaResponse], status_code=201)
 async def get_guidances(db: Session = Depends(get_db)):
     try:
         guidances = GuidanceRepository.get_guidances(db=db)
@@ -21,4 +22,5 @@ async def get_guidances(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"error: {e}")
 
     logger.info(f"Guidance response: {guidances}")
-    return " "
+
+    return guidances

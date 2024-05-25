@@ -1,25 +1,21 @@
 from pydantic import BaseModel
-from typing import List 
+from typing import List, Dict
 from enums import UserTypeEnum
 from uuid import UUID
 from typing import Optional
-from schema import GuidanceDestinationSchemaResponse
+import schema.guidance_destination_schema as g
+import schema.user_schema as u
 
-class Holder(BaseModel):
-    id: UUID
-    name: str
-    username: str
-    image: str
 
 class GuidanceSchemaBase(BaseModel):
     title: str
     description: str
-    rating: UserTypeEnum
+    rating: float
     state: str
     city: Optional[str] = None 
     approximatelyValue: float
-    holder: Holder
-    destinations: List[GuidanceDestinationSchemaResponse]
+    holder: u.UserSchemaResponse
+    destinations: List[g.GuidanceDestinationSchemaResponse]
 
 
 class GuidanceSchemaRequest(GuidanceSchemaBase): ...

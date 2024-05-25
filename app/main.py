@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import uvicorn
-from routers import user_route
+from routers import user_route, guidance_route
 from database import Base, engine
 
 Base.metadata.create_all(bind=engine)
@@ -8,6 +8,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 app.include_router(user_route.router, tags=["User Route"])
+app.include_router(guidance_route.router, tags=["Guidance Route"])
 
 
 @app.get("/")

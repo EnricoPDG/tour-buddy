@@ -6,14 +6,6 @@ Tour Buddy is a web application that connects tour guides with tourists, making 
 
 Tour Buddy is a platform developed to help tourists find local tour guides in various cities. It allows users to search for guides based on their destination preferences, availability dates, and desired type of experience.
 
-### Features
-
-- **Guide Search**: Tourists can search for tour guides based on location, language, interests, and available dates.
-- **Tour Scheduling**: Users can schedule tours directly with available guides.
-- **Reviews and Comments**: Tourists can leave reviews and comments about the tours and experiences offered by guides.
-- **Guide Profile**: Guides have individual profiles where they can list their specialties, languages spoken, experience, and reviews from previous clients.
-- **Secure Payments**: The application facilitates secure payment for scheduled tours.
-
 ### Technologies Used
 
 Tour Buddy is built using the following technologies:

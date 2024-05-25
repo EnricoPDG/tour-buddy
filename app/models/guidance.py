@@ -10,6 +10,6 @@ class Guidance(Base):
     description = Column(String, nullable=False)
     state = Column(String, nullable=False)
     city = Column(String, nullable=False)
-    approximatelyValue = Column(Float, nullable=True)
+    approximately_value = Column(Float, nullable=True)
     rating = Column(Float, nullable=False)
-    ownerId = Column(UUID(as_uuid=True), ForeignKey("user.id"), default=uuid4)
+    owner_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), default=uuid4)

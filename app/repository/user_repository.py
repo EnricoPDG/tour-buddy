@@ -37,5 +37,10 @@ class UserRepository:
         return id
 
     @staticmethod
-    def get_user(db: Session, id: UUID):
-        return db.query(User).filter_by(id=id).first()
+    def get_user(db: Session, id: UUID = None, email: str = None):
+        arguments = {}
+        if id is not None:
+            arguments['id'] = id
+        if email is not None:
+            arguments['email'] = email
+        return db.query(User).filter_by(**arguments).first()

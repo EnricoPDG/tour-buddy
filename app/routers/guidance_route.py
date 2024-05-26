@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=List[GuidanceSchemaResponse], status_code=201)
+@router.get("", response_model=List[GuidanceSchemaResponse], status_code=201)
 async def get_guidances(db: Session = Depends(get_db)):
     try:
         guidances = GuidanceRepository.get_guidances(db=db)

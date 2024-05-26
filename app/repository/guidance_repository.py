@@ -3,12 +3,16 @@ from models import Guidance, User, GuidanceDestination, GuidanceImage
 from schema.guidance_schema import GuidanceSchemaResponse, HolderSchema
 from schema.guidance_destination_schema import GuidanceDestinationSchemaResponse
 from schema.guidance_image_schema import GuidanceImageSchemaResponse
+from uuid import UUID
 
 
 class GuidanceRepository:
     @staticmethod
-    def get_guidances(db: Session) -> list[GuidanceSchemaResponse]:
-        guidances = db.query(Guidance).all()
+    def get_guidances(db: Session, user_id: UUID = None) -> list[GuidanceSchemaResponse]:
+        arguments = {}
+        if user_id is not None:
+            arguments['id'] = user_id
+        guidances = db.query(Guidance).filter_by(**arguments).all()
         response = []
 
         for guidance in guidances:

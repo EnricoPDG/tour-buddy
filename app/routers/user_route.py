@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session
 from app.schema import UserSchemaRequest, UserSchemaResponse
 from repository import UserRepository
 from database import get_db
 from loguru import logger
+import boto3
 
 router = APIRouter(
     prefix="/users"
@@ -87,3 +88,19 @@ async def fetch_user_profile_by_id(email: str, db: Session = Depends(get_db)):
         city=user.city,
     )
 
+
+@router.post("/upload-avatar-image/")
+async def upload_avatar_image(file: UploadFile = File(...)):
+    # Read the uploaded image file
+    contents = await file.read()
+    image = Image.open(io.BytesIO(contents))
+
+    # Process the image (this example does no processing)
+    processed_image = image
+
+    # Save the processed image to a temporary file
+    temp_file_path = "temp_image.png"
+    processed_image.save(temp_file_path)
+
+    # Return the image as a response
+    return FileResponse(temp_file_path, media_type="image/png")

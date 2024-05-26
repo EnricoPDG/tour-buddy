@@ -5,7 +5,6 @@ from typing import List
 from repository import GuidanceRepository
 from database import get_db
 from loguru import logger
-from uuid import UUID
 
 router = APIRouter(
     prefix="/guidances"

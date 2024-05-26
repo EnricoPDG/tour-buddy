@@ -10,7 +10,7 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=UserSchemaResponse, status_code=201)
+@router.post("", response_model=UserSchemaResponse, status_code=201)
 async def create_user(user: UserSchemaRequest, db: Session = Depends(get_db)):
     try:
         logger.debug(f"creating user: {user}")

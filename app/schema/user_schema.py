@@ -10,7 +10,7 @@ class UserSchemaBase(BaseModel):
     username: str
     type: UserTypeEnum
     name: str
-    description: Optional[str] = None 
+    description: Optional[str] = None
     cellphone_number: str
     birthday: date
     cpf: Optional[str] = None

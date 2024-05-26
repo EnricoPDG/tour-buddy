@@ -1,2 +1,3 @@
 from .user_repository import UserRepository
 from .guidance_repository import GuidanceRepository
+from.rating_repository import RatingRepository

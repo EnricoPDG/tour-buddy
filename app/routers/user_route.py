@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from app.schema import UserSchemaRequest, UserSchemaResponse
+from schema import UserSchemaRequest, UserSchemaResponse
 from repository import UserRepository
 from database import get_db
 from loguru import logger

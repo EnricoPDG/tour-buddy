@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session
-from app.schema import UserSchemaRequest, UserSchemaResponse
+from schema import UserSchemaRequest, UserSchemaResponse
 from repository import UserRepository
 from database import get_db
 from loguru import logger
-import boto3
+from utils import AWS
 
 router = APIRouter(
     prefix="/users"
@@ -65,7 +65,7 @@ async def fetch_user_profile_by_id(user_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/{email}", response_model=UserSchemaResponse, status_code=200)
-async def fetch_user_profile_by_id(email: str, db: Session = Depends(get_db)):
+async def fetch_user_profile_by_email(email: str, db: Session = Depends(get_db)):
     try:
         user = UserRepository.get_user(db=db, email=email)
         if user is None:
@@ -89,18 +89,14 @@ async def fetch_user_profile_by_id(email: str, db: Session = Depends(get_db)):
     )
 
 
-@router.post("/upload-avatar-image/")
-async def upload_avatar_image(file: UploadFile = File(...)):
-    # Read the uploaded image file
-    contents = await file.read()
-    image = Image.open(io.BytesIO(contents))
-
-    # Process the image (this example does no processing)
-    processed_image = image
-
-    # Save the processed image to a temporary file
-    temp_file_path = "temp_image.png"
-    processed_image.save(temp_file_path)
-
-    # Return the image as a response
-    return FileResponse(temp_file_path, media_type="image/png")
+@router.post("/upload-avatar-image/{email}", response_model_include={"avatar_url"}, status_code=201)
+async def upload_avatar_image(email: str, file: UploadFile = File(...), db: Session = Depends(get_db)):
+    try:
+        logger.debug(f"receveid request upload_avatar_image")
+        s3_image_url = AWS.send_image_s3_bucket(file=file, email=email)
+        avatar_url = UserRepository.upload_avatar_url(db=db, email=email, avatar_url=s3_image_url)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"error: {e}")
+    
+    logger.info(f"User avatar_url: {avatar_url}")
+    return {"avatar_url": avatar_url}

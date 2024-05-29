@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.future import select
 from loguru import logger
 from models import User
 from schema import UserSchemaRequest
@@ -44,3 +45,15 @@ class UserRepository:
         if email is not None:
             arguments['email'] = email
         return db.query(User).filter_by(**arguments).first()
+
+    @staticmethod
+    def upload_avatar_url(db: Session, email: str, avatar_url: str):
+        user = db.query(User).filter(User.email == email).first()
+
+        if user:
+            user.avatar_url = avatar_url
+            db.commit()
+            db.refresh(user)
+            return avatar_url
+        else:
+            return None

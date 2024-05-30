@@ -3,12 +3,13 @@ from models import Guidance, User, GuidanceDestination, GuidanceImage
 from schema.guidance_schema import GuidanceSchemaResponse, HolderSchema
 from schema.guidance_destination_schema import GuidanceDestinationSchemaResponse
 from schema.guidance_image_schema import GuidanceImageSchemaResponse
-from uuid import UUID
+import uuid
+from typing import List
 
 
 class GuidanceRepository:
     @staticmethod
-    def get_guidances(db: Session, user_id: UUID = None) -> list[GuidanceSchemaResponse]:
+    def get_guidances(db: Session, user_id: uuid.UUID = None) -> list[GuidanceSchemaResponse]:
         arguments = {}
         if user_id is not None:
             arguments['id'] = user_id
@@ -60,3 +61,15 @@ class GuidanceRepository:
             response.append(guidance_response)
 
         return response
+
+    @staticmethod
+    def update_destination_images(db: Session, destination_id: uuid.UUID, image_urls: List[str]):
+        for url in image_urls:
+            new_image = GuidanceImage(id=str(uuid.uuid4()), url=url, id_guidance_destination=destination_id)
+            db.add(new_image)
+        
+        db.commit()
+    
+    @staticmethod
+    def get_destination_images(db: Session, destination_id: uuid.UUID):
+        return db.query(GuidanceImage).filter(GuidanceImage.id_guidance_destination == destination_id).all()

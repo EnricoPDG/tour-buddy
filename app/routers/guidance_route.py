@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session
-from schema import GuidanceSchemaResponse, UserSchemaResponse
+from schema import GuidanceSchemaResponse, GuidanceSchemaRequest
 from typing import List
 from repository import GuidanceRepository
 from database import get_db
@@ -54,18 +54,13 @@ async def update_destinations_images(destination_id: uuid.UUID, files: List[Uplo
     return {"message": "Images updated successfully", "image_urls": s3_image_urls}
 
 
-@router.get("/destination-images/{destination_id}", response_model=List[str])
-async def get_destination_images(destination_id: uuid.UUID, db: Session = Depends(get_db)):
+@router.post("/guidances", response_model=GuidanceSchemaResponse, status_code=201)
+async def create_guidance(guidance: GuidanceSchemaRequest, owner_id: uuid.UUID, db: Session = Depends(get_db)):
     try:
-        logger.debug(f"Received request to get images for destination ID: {destination_id}")
-        images = GuidanceRepository.get_destination_images(db=db, destination_id=destination_id)
-        if not images:
-            raise HTTPException(status_code=404, detail="No images found for the given destination ID")
-
-        image_urls = [image.url for image in images]
+        logger.debug("Received request to create guidance")
+        new_guidance = GuidanceRepository.create_guidance(db=db, guidance_data=guidance, owner_id=owner_id)
     except Exception as e:
-        logger.error(f"Error retrieving images: {e}")
-        raise HTTPException(status_code=500, detail=f"Error: {e}")
+        logger.error(f"Error creating guidance: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
     
-    logger.info(f"Successfully retrieved images for destination ID: {destination_id}")
-    return image_urls
+    return new_guidance

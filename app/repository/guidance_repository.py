@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models import Guidance, User, GuidanceDestination, GuidanceImage
-from schema.guidance_schema import GuidanceSchemaResponse, HolderSchema
+from schema.guidance_schema import GuidanceSchemaResponse, HolderSchema, GuidanceSchemaRequest
 from schema.guidance_destination_schema import GuidanceDestinationSchemaResponse
 from schema.guidance_image_schema import GuidanceImageSchemaResponse
 import uuid
@@ -73,3 +73,36 @@ class GuidanceRepository:
     @staticmethod
     def get_destination_images(db: Session, destination_id: uuid.UUID):
         return db.query(GuidanceImage).filter(GuidanceImage.id_guidance_destination == destination_id).all()
+    
+    @staticmethod
+    def create_guidance(db: Session, guidance_data: GuidanceSchemaRequest, owner_id: uuid.UUID) -> Guidance:
+        new_guidance = Guidance(
+            title=guidance_data.title,
+            description=guidance_data.description,
+            state=guidance_data.state,
+            city=guidance_data.city,
+            approximately_value=guidance_data.approximately_value,
+            rating=guidance_data.rating,
+            owner_id=owner_id
+        )
+        db.add(new_guidance)
+        db.commit()
+        db.refresh(new_guidance)
+        
+        for destination in guidance_data.destinations:
+            new_destination = GuidanceDestination(
+                id=destination.id,
+                description=destination.description,
+                cep=destination.cep,
+                state=destination.state,
+                city=destination.city,
+                street=destination.street,
+                neighborhood=destination.neighborhood,
+                number=destination.number,
+                complement=destination.complement,
+                guidance_id=new_guidance.id
+            )
+            db.add(new_destination)
+        db.commit()
+        
+        return new_guidance

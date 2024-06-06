@@ -17,15 +17,16 @@ class GuidanceSchemaBase(BaseModel):
     state: str
     city: Optional[str] = None 
     approximately_value: float
-    holder: HolderSchema
     destinations: List[g.GuidanceDestinationSchemaResponse]
 
 
-class GuidanceSchemaRequest(GuidanceSchemaBase): ...
+class GuidanceSchemaRequest(GuidanceSchemaBase):
+    ...
 
 
 class GuidanceSchemaResponse(GuidanceSchemaBase):
     id: UUID
+    holder: HolderSchema
 
     class Config:
         orm_mode = True

@@ -77,6 +77,7 @@ class GuidanceRepository:
     @staticmethod
     def create_guidance(db: Session, guidance_data: GuidanceSchemaRequest, owner_id: uuid.UUID) -> Guidance:
         new_guidance = Guidance(
+            id=uuid.uuid4(),
             title=guidance_data.title,
             description=guidance_data.description,
             state=guidance_data.state,

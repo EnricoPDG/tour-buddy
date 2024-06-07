@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
-from models import Guidance, User, GuidanceDestination, GuidanceImage
+from models import Guidance, User, GuidanceDestination, GuidanceImage, GuidanceSchedule
 from schema.guidance_schema import GuidanceSchemaResponse, HolderSchema, GuidanceSchemaRequest
 from schema.guidance_destination_schema import GuidanceDestinationSchemaResponse
 from schema.guidance_image_schema import GuidanceImageSchemaResponse
+from schema.guidance_scheadule_schema import GuidanceScheduleSchemaRequest, GuidanceScheduleSchemaResponse
 import uuid
 from typing import List
 
@@ -107,3 +108,52 @@ class GuidanceRepository:
         db.commit()
         
         return new_guidance
+    
+    @staticmethod
+    def create_guidance_schedule(db: Session, schedule_data: GuidanceScheduleSchemaRequest) -> GuidanceScheduleSchemaResponse:
+        new_schedule = GuidanceSchedule(
+            start_date_time=schedule_data.start_datetime,
+            finish_date_time=schedule_data.finish_datetime,
+            confirmed_by_tourist=schedule_data.confirmed_by_tourist,
+            guide_id=schedule_data.guide_id,
+            tourist_id=schedule_data.tourist_id,
+            guidance_id=schedule_data.guidance_id
+        )
+
+        schedule_response = GuidanceScheduleSchemaResponse(
+            id=new_schedule.id,
+            start_datetime=new_schedule.start_date_time,
+            finish_datetime=new_schedule.finish_date_time,
+            confirmed_by_tourist=new_schedule.confirmed_by_tourist,
+            guide_id=new_schedule.guide_id,
+            tourist_id=new_schedule.tourist_id,
+            guidance_id=new_schedule.guidance_id
+        )
+        db.add(new_schedule)
+        db.commit()
+        db.refresh(new_schedule)
+
+        return schedule_response
+    
+    @staticmethod
+    def get_guidance_schedules(db:Session, guidance_id: uuid.UUID = None) -> list[GuidanceScheduleSchemaResponse]:
+        query = db.query(GuidanceSchedule)
+        if guidance_id is not None:
+            query = query.filter(GuidanceSchedule.guidance_id == guidance_id)
+        
+        schedules = query.all()
+        response = []
+
+        for schedule in schedules:
+            schedule_response = GuidanceDestinationSchemaResponse(
+                id=schedule.id,
+                start_datetime=schedule.start_date_time,
+                finish_datetime=schedule.finish_date_time,
+                confirmed_by_tourist=schedule.confirmed_by_tourist,
+                guide_id=schedule.guide_id,
+                tourist_id=schedule.tourist_id,
+                guidance_id=schedule.guidance_id
+            )
+            response.append(schedule_response)
+        
+        return response

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session
-from schema import GuidanceSchemaResponse, GuidanceSchemaRequest, GuidanceScheduleSchemaRequest, GuidanceScheduleSchemaResponse
+from schema import GuidanceSchemaResponse, GuidanceSchemaRequest, GuidanceScheduleSchemaRequest, \
+    GuidanceScheduleSchemaResponse
 from typing import List
 from repository import GuidanceRepository
 from database import get_db
@@ -42,14 +43,15 @@ async def get_guidances(user_id: uuid.UUID, db: Session = Depends(get_db)):
 
 
 @router.post("/update-destinations-images/{destination_id}", status_code=201)
-async def update_destinations_images(destination_id: uuid.UUID, files: List[UploadFile] = File(...), db: Session = Depends(get_db)):
+async def update_destinations_images(destination_id: uuid.UUID, files: List[UploadFile] = File(...),
+                                     db: Session = Depends(get_db)):
     try:
         logger.debug(f"Received request to update images for destination ID: {destination_id}")
         s3_image_urls = AWS.send_images_to_s3(files=files, destination_id=destination_id)
         GuidanceRepository.update_destination_images(db=db, destination_id=destination_id, image_urls=s3_image_urls)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {e}")
-    
+
     logger.info(f"Images for destination ID {destination_id} updated successfully")
     return {"message": "Images updated successfully", "image_urls": s3_image_urls}
 
@@ -62,10 +64,11 @@ async def create_guidance(guidance: GuidanceSchemaRequest, db: Session = Depends
     except Exception as e:
         logger.error(f"Error creating guidance: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
-    
+
     return new_guidance
 
-@router.post("/schedules", respponse_model=GuidanceScheduleSchemaResponse, status_code=201)
+
+@router.post("/schedules", response_model=GuidanceScheduleSchemaResponse, status_code=201)
 async def create_guidance_schedule(schedule: GuidanceScheduleSchemaRequest, db: Session = Depends(get_db)):
     try:
         logger.debug("Received request to create guidance schedule")
@@ -73,8 +76,9 @@ async def create_guidance_schedule(schedule: GuidanceScheduleSchemaRequest, db: 
     except Exception as e:
         logger.error(f"Error creating guidance schedule: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
-    
+
     return new_schedule
+
 
 @router.get("/schedules", response_model=List[GuidanceScheduleSchemaResponse], status_code=200)
 async def get_guidance_schedules(guidance_id: uuid.UUID = None, db: Session = Depends(get_db)):
@@ -86,5 +90,5 @@ async def get_guidance_schedules(guidance_id: uuid.UUID = None, db: Session = De
     except Exception as e:
         logger.error(f"Error fetching guidance schedules: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
-    
+
     return schedules

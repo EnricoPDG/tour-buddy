@@ -14,7 +14,8 @@ app.include_router(guidance_route.router, tags=["Guidance Route"])
 @app.middleware("http")
 async def add_utf8_middleware(request: Request, call_next):
     response = await call_next(request)
-    response.headers["Content-Type"] = "application/json; charset=utf-8"
+    if not request.url.path.__contains__("docs"):
+        response.headers["Content-Type"] = "application/json; charset=utf-8"
     return response
 
 

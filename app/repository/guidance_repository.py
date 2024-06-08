@@ -61,7 +61,6 @@ class GuidanceRepository:
                 approximately_value=guidance.approximately_value,
                 holder=holder_response,
                 destinations=destination_responses
-
             )
             response.append(guidance_response)
 

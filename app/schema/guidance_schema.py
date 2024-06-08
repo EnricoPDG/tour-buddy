@@ -14,10 +14,10 @@ class HolderSchema(BaseModel):
 
 class GuidanceSchemaBase(BaseModel):
     title: str
-    description: str
+    description: Optional[str] = None
     state: str
     city: Optional[str] = None
-    approximately_value: float
+    approximately_value: Optional[float]
     destinations: List[g.GuidanceDestinationSchemaBase]
 
 

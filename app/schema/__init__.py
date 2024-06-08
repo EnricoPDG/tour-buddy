@@ -2,3 +2,4 @@ from .user_schema import UserSchemaRequest, UserSchemaResponse
 from .guidance_schema import GuidanceSchemaRequest, GuidanceSchemaResponse, HolderSchema
 from .guidance_destination_schema import GuidanceDestinationSchemaRequest, GuidanceDestinationSchemaResponse
 from .guidance_image_schema import GuidanceImageSchemaRequest, GuidanceImageSchemaResponse
+from .guidance_scheadule_schema import GuidanceScheduleSchemaRequest, GuidanceScheduleSchemaResponse

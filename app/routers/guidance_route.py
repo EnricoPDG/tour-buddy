@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session
-from schema import GuidanceSchemaResponse, GuidanceSchemaRequest
+from schema import GuidanceSchemaResponse, GuidanceSchemaRequest, GuidanceScheduleSchemaRequest, GuidanceScheduleSchemaResponse
 from typing import List
 from repository import GuidanceRepository
 from database import get_db
@@ -64,3 +64,27 @@ async def create_guidance(guidance: GuidanceSchemaRequest, db: Session = Depends
         raise HTTPException(status_code=500, detail="Internal Server Error")
     
     return new_guidance
+
+@router.post("/schedules", respponse_model=GuidanceScheduleSchemaResponse, status_code=201)
+async def create_guidance_schedule(schedule: GuidanceScheduleSchemaRequest, db: Session = Depends(get_db)):
+    try:
+        logger.debug("Received request to create guidance schedule")
+        new_schedule = GuidanceRepository.create_guidance_schedule(db=db, schedule_data=schedule)
+    except Exception as e:
+        logger.error(f"Error creating guidance schedule: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+    return new_schedule
+
+@router.get("/schedules", response_model=List[GuidanceScheduleSchemaResponse], status_code=200)
+async def get_guidance_schedules(guidance_id: uuid.UUID = None, db: Session = Depends(get_db)):
+    try:
+        logger.debug("Received request to fetch guidance schedules")
+        schedules = GuidanceRepository.get_guidance_schedules(db=db, guidance_id=guidance_id)
+        if schedules is None:
+            raise HTTPException(status_code=404, detail="No schedules found")
+    except Exception as e:
+        logger.error(f"Error fetching guidance schedules: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+    return schedules

@@ -1,8 +1,10 @@
 import boto3
 import os
+
 from botocore.exceptions import NoCredentialsError
 from loguru import logger
 from typing import List
+
 
 class AWS:
     @staticmethod
@@ -56,4 +58,3 @@ class AWS:
                 raise e
 
         return urls
-        

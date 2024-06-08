@@ -54,11 +54,11 @@ async def update_destinations_images(destination_id: uuid.UUID, files: List[Uplo
     return {"message": "Images updated successfully", "image_urls": s3_image_urls}
 
 
-@router.post("/guidances", response_model=GuidanceSchemaResponse, status_code=201)
-async def create_guidance(guidance: GuidanceSchemaRequest, owner_id: uuid.UUID, db: Session = Depends(get_db)):
+@router.post("", response_model=GuidanceSchemaResponse, status_code=201)
+async def create_guidance(guidance: GuidanceSchemaRequest, db: Session = Depends(get_db)):
     try:
-        logger.debug("Receiwved request to create guidance")
-        new_guidance = GuidanceRepository.create_guidance(db=db, guidance_data=guidance, owner_id=owner_id)
+        logger.debug("Received request to create guidance")
+        new_guidance = GuidanceRepository.create_guidance(db=db, guidance_data=guidance)
     except Exception as e:
         logger.error(f"Error creating guidance: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")

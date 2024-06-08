@@ -11,5 +11,4 @@ class Guidance(Base):
     state = Column(String, nullable=False)
     city = Column(String, nullable=False)
     approximately_value = Column(Float, nullable=True)
-    rating = Column(Float, nullable=False)
     owner_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), default=uuid4)

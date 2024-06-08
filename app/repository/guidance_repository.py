@@ -10,10 +10,12 @@ from typing import List
 
 class GuidanceRepository:
     @staticmethod
-    def get_guidances(db: Session, user_id: uuid.UUID = None) -> list[GuidanceSchemaResponse]:
+    def get_guidances(db: Session, user_id: uuid.UUID = None, guidance_id: uuid.UUID = None) -> list[GuidanceSchemaResponse]:
         arguments = {}
+        if guidance_id is not None:
+            arguments['id'] = guidance_id
         if user_id is not None:
-            arguments['id'] = user_id
+            arguments['owner_id'] = user_id
         guidances = db.query(Guidance).filter_by(**arguments).all()
         response = []
 
@@ -22,6 +24,7 @@ class GuidanceRepository:
             destinations = db.query(GuidanceDestination).filter(GuidanceDestination.guidance_id == guidance.id).all()
             
             destination_responses = []
+
             for destination in destinations:
                 images = db.query(GuidanceImage).filter(GuidanceImage.id_guidance_destination == destination.id).all()
                 image_responses = [GuidanceImageSchemaResponse(url=image.url, id=image.id) for image in images]
@@ -52,12 +55,14 @@ class GuidanceRepository:
                 id=guidance.id,
                 title=guidance.title,
                 description=guidance.description,
-                rating=guidance.rating,
+                # TODO: fazer requisição para buscar o rating
+                rating=3.5,
                 state=guidance.state,
                 city=guidance.city,
                 approximately_value=guidance.approximately_value,
                 holder=holder_response,
                 destinations=destination_responses
+
             )
             response.append(guidance_response)
 
@@ -76,7 +81,7 @@ class GuidanceRepository:
         return db.query(GuidanceImage).filter(GuidanceImage.id_guidance_destination == destination_id).all()
     
     @staticmethod
-    def create_guidance(db: Session, guidance_data: GuidanceSchemaRequest, owner_id: uuid.UUID) -> Guidance:
+    def create_guidance(db: Session, guidance_data: GuidanceSchemaRequest) -> GuidanceSchemaResponse:
         new_guidance = Guidance(
             id=uuid.uuid4(),
             title=guidance_data.title,
@@ -84,16 +89,12 @@ class GuidanceRepository:
             state=guidance_data.state,
             city=guidance_data.city,
             approximately_value=guidance_data.approximately_value,
-            rating=guidance_data.rating,
-            owner_id=owner_id
+            owner_id=guidance_data.owner_id,
         )
         db.add(new_guidance)
-        db.commit()
-        db.refresh(new_guidance)
-        
+
         for destination in guidance_data.destinations:
             new_destination = GuidanceDestination(
-                id=destination.id,
                 description=destination.description,
                 cep=destination.cep,
                 state=destination.state,
@@ -107,7 +108,7 @@ class GuidanceRepository:
             db.add(new_destination)
         db.commit()
         
-        return new_guidance
+        return GuidanceRepository.get_guidances(db=db, guidance_id=new_guidance.id)[0]
     
     @staticmethod
     def create_guidance_schedule(db: Session, schedule_data: GuidanceScheduleSchemaRequest) -> GuidanceScheduleSchemaResponse:

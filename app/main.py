@@ -2,6 +2,11 @@ from fastapi import FastAPI, Request
 import uvicorn
 from routers import user_route, guidance_route
 from database import Base, engine
+from loguru import logger
+import sys
+
+logger.remove(0)
+logger.add(sys.stderr, level="DEBUG")
 
 Base.metadata.create_all(bind=engine)
 

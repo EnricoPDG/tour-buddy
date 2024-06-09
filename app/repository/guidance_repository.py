@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from models import Guidance, User, GuidanceDestination, GuidanceImage, GuidanceSchedule
+from sqlalchemy import func
+from models import Guidance, User, GuidanceDestination, GuidanceImage, GuidanceSchedule, GuidanceRating
 from schema.guidance_schema import GuidanceSchemaResponse, HolderSchema, GuidanceSchemaRequest
 from schema.guidance_destination_schema import GuidanceDestinationSchemaResponse
 from schema.guidance_image_schema import GuidanceImageSchemaResponse
@@ -44,6 +45,10 @@ class GuidanceRepository:
                     )
                 )
 
+             # Calculate the average rating
+            avg_rating = db.query(func.avg(GuidanceRating.rating)).filter(GuidanceRating.guidance_id == guidance.id).scalar()
+            avg_rating = avg_rating if avg_rating is not None else 3.5
+
             holder_response = HolderSchema(
                 id=holder.id,
                 name=holder.name,
@@ -56,7 +61,7 @@ class GuidanceRepository:
                 title=guidance.title,
                 description=guidance.description,
                 # TODO: fazer requisição para buscar o rating
-                rating=3.5,
+                rating=avg_rating,
                 state=guidance.state,
                 city=guidance.city,
                 approximately_value=guidance.approximately_value,
@@ -157,3 +162,12 @@ class GuidanceRepository:
             response.append(schedule_response)
         
         return response
+
+    @staticmethod
+    def get_guidances_concluded_quantity(db: Session, user_id: str) -> int:
+        from datetime import datetime
+        return db.query(Guidance).filter(Guidance.owner_id == user_id, Guidance.confirmed == True, Guidance.end_date < datetime.now()).count()
+    
+    @staticmethod
+    def get_travel_plan_quantity(db: Session, user_id: str) -> int:
+        return db.query(Guidance).filter(Guidance.owner_id == user_id).count()

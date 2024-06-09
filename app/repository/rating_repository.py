@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
-from models import GuidanceRating, User
+from models import GuidanceRating, User, Guidance
 from schema.guidance_rating_schema import GuidanceRatingSchemaResponse, GuidanceRatingSchemaRequest
 import uuid
-
+from sqlalchemy import func
+    
 class RatingRepository:
     
     @staticmethod
@@ -83,3 +84,9 @@ class RatingRepository:
             guidance_id=new_rating.guidance_id,
             ratingHolder=evaluator_response
         )
+    
+    @staticmethod
+    def get_user_rating(db: Session, user_id: str) -> float:
+        avg_rating = db.query(func.avg(GuidanceRating.rating)).join(Guidance, Guidance.id == GuidanceRating.guidance_id).filter(Guidance.owner_id == user_id).scalar()
+        return avg_rating if avg_rating is not None else 3.5
+

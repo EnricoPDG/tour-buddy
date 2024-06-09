@@ -48,6 +48,7 @@ class UserRepository:
 
     @staticmethod
     def upload_avatar_url(db: Session, email: str, avatar_url: str):
+
         user = db.query(User).filter(User.email == email).first()
 
         if user:

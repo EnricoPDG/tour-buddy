@@ -3,9 +3,10 @@ from models import GuidanceRating, User, Guidance
 from schema.guidance_rating_schema import GuidanceRatingSchemaResponse, GuidanceRatingSchemaRequest
 import uuid
 from sqlalchemy import func
-    
+
+
 class RatingRepository:
-    
+
     @staticmethod
     def get_ratings_by_user(db: Session, user_id: uuid.UUID) -> list[GuidanceRatingSchemaResponse]:
         ratings = (db.query(GuidanceRating).
@@ -14,7 +15,7 @@ class RatingRepository:
                    .filter(User.id == user_id).all()
                    )
         response = []
-        
+
         for rating in ratings:
             evaluator = db.query(User).filter(User.id == rating.evaluator_id).first()
             evaluator_response = {
@@ -33,21 +34,22 @@ class RatingRepository:
                 ratingHolder=evaluator_response
             )
             response.append(rating_response)
-        
+
         return response
 
     @staticmethod
     def get_ratings_by_guidance(db: Session, guidance_id: uuid.UUID) -> list[GuidanceRatingSchemaResponse]:
         ratings = db.query(GuidanceRating).filter(GuidanceRating.guidance_id == guidance_id).all()
         response = []
-        
+
         for rating in ratings:
             evaluator = db.query(User).filter(User.id == rating.evaluator_id).first()
             evaluator_response = {
                 "id": evaluator.id,
                 "name": evaluator.name,
                 "username": evaluator.username,
-                "image": evaluator.avatar_url
+                "image": evaluator.avatar_url,
+                "type": evaluator.type
             }
             rating_response = GuidanceRatingSchemaResponse(
                 id=rating.id,
@@ -58,11 +60,12 @@ class RatingRepository:
                 ratingHolder=evaluator_response
             )
             response.append(rating_response)
-        
+
         return response
 
     @staticmethod
-    def create_rating(db: Session, guidance_id: uuid.UUID, rating_data: GuidanceRatingSchemaRequest) -> GuidanceRatingSchemaResponse:
+    def create_rating(db: Session, guidance_id: uuid.UUID,
+                      rating_data: GuidanceRatingSchemaRequest) -> GuidanceRatingSchemaResponse:
         new_rating = GuidanceRating(
             rating=rating_data.rating,
             description=rating_data.description,
@@ -72,7 +75,7 @@ class RatingRepository:
         db.add(new_rating)
         db.commit()
         db.refresh(new_rating)
-        
+
         evaluator = db.query(User).filter(User.id == new_rating.evaluator_id).first()
         evaluator_response = {
             "id": evaluator.id,
@@ -80,7 +83,7 @@ class RatingRepository:
             "username": evaluator.username,
             "image": evaluator.avatar_url
         }
-        
+
         return GuidanceRatingSchemaResponse(
             id=new_rating.id,
             rating=new_rating.rating,
@@ -89,9 +92,10 @@ class RatingRepository:
             guidance_id=new_rating.guidance_id,
             ratingHolder=evaluator_response
         )
-    
+
     @staticmethod
     def get_user_rating(db: Session, user_id: str) -> float:
-        avg_rating = db.query(func.avg(GuidanceRating.rating)).join(Guidance, Guidance.id == GuidanceRating.guidance_id).filter(Guidance.owner_id == user_id).scalar()
+        avg_rating = db.query(func.avg(GuidanceRating.rating)).join(Guidance,
+                                                                    Guidance.id == GuidanceRating.guidance_id).filter(
+            Guidance.owner_id == user_id).scalar()
         return avg_rating if avg_rating is not None else 3.5
-

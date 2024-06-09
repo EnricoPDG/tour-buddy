@@ -16,6 +16,6 @@ class GuidanceRatingSchemaRequest(GuidanceRatingSchemaBase):
 
 class GuidanceRatingSchemaResponse(GuidanceRatingSchemaBase):
     id: UUID
-    ratingHolder: UserSchemaResponse
+    ratingHolder: Optional[UserSchemaResponse] = None
     class Config:
         orm_mode = True

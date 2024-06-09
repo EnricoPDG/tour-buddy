@@ -166,7 +166,8 @@ class GuidanceRepository:
     @staticmethod
     def get_guidances_concluded_quantity(db: Session, user_id: str) -> int:
         from datetime import datetime
-        return db.query(Guidance).filter(Guidance.owner_id == user_id, Guidance.confirmed == True, Guidance.end_date < datetime.now()).count()
+        return 0
+        # return db.query(Guidance).filter(Guidance.owner_id == user_id, Guidance.confirmed == True, Guidance.end_date < datetime.now()).count()
     
     @staticmethod
     def get_travel_plan_quantity(db: Session, user_id: str) -> int:

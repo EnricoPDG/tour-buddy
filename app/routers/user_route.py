@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session
 from schema import UserSchemaRequest, UserSchemaResponse, GuideDataSchema
-from repository import UserRepository
+from repository import UserRepository, RatingRepository, GuidanceRepository
 from database import get_db
 from loguru import logger
 from utils import AWS
@@ -44,9 +44,9 @@ async def fetch_user_profile_by_id(user_id: str, db: Session = Depends(get_db)):
         if user is None:
             raise HTTPException(status_code=404, detail=f"Erro: o usuário não foi encontrado")
         
-        guidances_concluded_quantity = UserRepository.get_guidances_concluded_quantity(db=db, user_id=user_id)
-        rating = UserRepository.get_user_rating(db=db, user_id=user_id)
-        travel_plan_quantity = UserRepository.get_travel_plan_quantity(db=db, user_id=user_id)
+        guidances_concluded_quantity = GuidanceRepository.get_guidances_concluded_quantity(db=db, user_id=user_id)
+        rating = RatingRepository.get_user_rating(db=db, user_id=user_id)
+        travel_plan_quantity = GuidanceRepository.get_travel_plan_quantity(db=db, user_id=user_id)
 
         guide_data = GuideDataSchema(
             guidancesConcludedQuantity=guidances_concluded_quantity,
@@ -69,7 +69,7 @@ async def fetch_user_profile_by_id(user_id: str, db: Session = Depends(get_db)):
         avatar_url=user.avatar_url,
         state=user.state,
         city=user.city,
-        guide_data=guide_data
+        guideData=guide_data
     )
 
 @router.get("/{email}", response_model=UserSchemaResponse, status_code=200)

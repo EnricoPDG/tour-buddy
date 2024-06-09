@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session
-from schema import UserSchemaRequest, UserSchemaResponse
+from schema import UserSchemaRequest, UserSchemaResponse, GuideDataSchema
 from repository import UserRepository
 from database import get_db
 from loguru import logger
@@ -9,7 +9,6 @@ from utils import AWS
 router = APIRouter(
     prefix="/users"
 )
-
 
 @router.post("", response_model=UserSchemaResponse, status_code=201)
 async def create_user(user: UserSchemaRequest, db: Session = Depends(get_db)):
@@ -44,6 +43,16 @@ async def fetch_user_profile_by_id(user_id: str, db: Session = Depends(get_db)):
         user = UserRepository.get_user(db=db, user_id=user_id)
         if user is None:
             raise HTTPException(status_code=404, detail=f"Erro: o usuário não foi encontrado")
+        
+        guidances_concluded_quantity = UserRepository.get_guidances_concluded_quantity(db=db, user_id=user_id)
+        rating = UserRepository.get_user_rating(db=db, user_id=user_id)
+        travel_plan_quantity = UserRepository.get_travel_plan_quantity(db=db, user_id=user_id)
+
+        guide_data = GuideDataSchema(
+            guidancesConcludedQuantity=guidances_concluded_quantity,
+            rating=rating,
+            travelPlanQuantity=travel_plan_quantity
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"error: {e}")
 
@@ -60,8 +69,8 @@ async def fetch_user_profile_by_id(user_id: str, db: Session = Depends(get_db)):
         avatar_url=user.avatar_url,
         state=user.state,
         city=user.city,
+        guide_data=guide_data
     )
-
 
 @router.get("/{email}", response_model=UserSchemaResponse, status_code=200)
 async def fetch_user_profile_by_email(email: str, db: Session = Depends(get_db)):

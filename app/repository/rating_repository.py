@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import GuidanceRating, User
+from models import GuidanceRating, User, Guidance
 from schema.guidance_rating_schema import GuidanceRatingSchemaResponse, GuidanceRatingSchemaRequest
 import uuid
 
@@ -7,7 +7,11 @@ class RatingRepository:
     
     @staticmethod
     def get_ratings_by_user(db: Session, user_id: uuid.UUID) -> list[GuidanceRatingSchemaResponse]:
-        ratings = db.query(GuidanceRating).join(User, GuidanceRating.evaluator_id == User.id).filter(User.id == user_id).all()
+        ratings = (db.query(GuidanceRating).
+                   join(Guidance, GuidanceRating.guidance_id == Guidance.id)
+                   .join(User, User.id == Guidance.owner_id)
+                   .filter(User.id == user_id).all()
+                   )
         response = []
         
         for rating in ratings:
@@ -16,7 +20,8 @@ class RatingRepository:
                 "id": evaluator.id,
                 "name": evaluator.name,
                 "username": evaluator.username,
-                "image": evaluator.avatar_url
+                "image": evaluator.avatar_url,
+                "type": evaluator.type,
             }
             rating_response = GuidanceRatingSchemaResponse(
                 id=rating.id,

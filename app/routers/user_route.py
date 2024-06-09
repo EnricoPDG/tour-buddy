@@ -60,7 +60,6 @@ async def fetch_user_profile_by_id(user_id: str, db: Session = Depends(get_db)):
         avatar_url=user.avatar_url,
         state=user.state,
         city=user.city,
-
     )
 
 

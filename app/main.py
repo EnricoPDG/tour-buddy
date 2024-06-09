@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 import uvicorn
-from routers import user_route, guidance_route
+from routers import user_route, guidance_route, rating_route
 from database import Base, engine
 from loguru import logger
 import sys
@@ -14,7 +14,7 @@ app = FastAPI()
 
 app.include_router(user_route.router, tags=["User Route"])
 app.include_router(guidance_route.router, tags=["Guidance Route"])
-
+app.include_router(rating_route.router, tags=["Rating Route"])
 
 @app.middleware("http")
 async def add_utf8_middleware(request: Request, call_next):

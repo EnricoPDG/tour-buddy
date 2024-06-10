@@ -23,7 +23,7 @@ class AWS:
         s3_image_url = f"https://{bucket}.s3.amazonaws.com/{file_key}"
         logger.debug(f"image url: {s3_image_url}")
         try:
-            s3_client.upload_fileobj(file.file, bucket, file_key)
+            response = s3_client.upload_fileobj(file.file, bucket, file_key)
         except FileNotFoundError as e:
             logger.error(f"File not found: {e}")
             raise e
@@ -31,6 +31,7 @@ class AWS:
             logger.error("Error with credentials: {e}")
             raise e
 
+        logger.info(f"s3 response: {response}")
         return s3_image_url
 
     @staticmethod

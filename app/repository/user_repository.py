@@ -2,8 +2,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 from loguru import logger
 from models import User
-from schema import UserSchemaRequest
+from schema import UserSchemaRequest, UserSchemaResponse
 from uuid import uuid4, UUID
+from typing import List, Optional
+from sqlalchemy import or_
 
 
 class UserRepository:
@@ -58,3 +60,38 @@ class UserRepository:
             return avatar_url
         else:
             return None
+        
+    @staticmethod
+    def search_users(db: Session, search_text: Optional[str] = None) -> List[UserSchemaResponse]:
+        query = db.query(User)
+
+        if search_text:
+            search_text = f"%{search_text}%"
+            query = query.filter(
+                or_(
+                    User.name.ilike(search_text),
+                    User.username.ilike(search_text),
+                    User.email.ilike(search_text)
+                )
+            )
+
+        users = query.all()
+        response = []
+
+        for user in users:
+            user_response = UserSchemaResponse(
+                id=user.id,
+                email=user.email,
+                name=user.name,
+                username=user.username,
+                type=user.type,
+                cellphone_number=user.cellphone_number,
+                birthday=user.birthday,
+                cpf=user.cpf,
+                avatar_url=user.avatar_url,
+                state=user.state,
+                city=user.city
+            )
+            response.append(user_response)
+
+        return response

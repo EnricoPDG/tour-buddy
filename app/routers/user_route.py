@@ -5,6 +5,7 @@ from repository import UserRepository, RatingRepository, GuidanceRepository
 from database import get_db
 from loguru import logger
 from utils import AWS
+from typing import List, Optional
 
 router = APIRouter(
     prefix="/users"
@@ -108,3 +109,15 @@ async def upload_avatar_image(email: str, file: UploadFile = File(...), db: Sess
     
     logger.info(f"User avatar_url: {avatar_url}")
     return {"avatar_url": avatar_url}
+
+@router.get("", response_model=List[UserSchemaResponse], status_code=200)
+async def search_users(search_text: Optional[str] = None, db: Session = Depends(get_db)):
+    try:
+        users = UserRepository.search_users(db=db, search_text=search_text)
+        if not users:
+            raise HTTPException(status_code=404, detail="No users found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {e}")
+
+    logger.info(f"User search response: {users}")
+    return users

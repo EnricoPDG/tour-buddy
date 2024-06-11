@@ -48,7 +48,7 @@ class RatingRepository:
                 "id": evaluator.id,
                 "name": evaluator.name,
                 "username": evaluator.username,
-                "image": evaluator.avatar_url,
+                "avatar_url": evaluator.avatar_url,
                 "type": evaluator.type
             }
             rating_response = GuidanceRatingSchemaResponse(

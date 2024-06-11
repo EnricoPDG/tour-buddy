@@ -1,23 +1,37 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from models import Guidance, User, GuidanceDestination, GuidanceImage, GuidanceSchedule, GuidanceRating
 from schema.guidance_schema import GuidanceSchemaResponse, HolderSchema, GuidanceSchemaRequest
 from schema.guidance_destination_schema import GuidanceDestinationSchemaResponse
 from schema.guidance_image_schema import GuidanceImageSchemaResponse
 from schema.guidance_scheadule_schema import GuidanceScheduleSchemaRequest, GuidanceScheduleSchemaResponse
 import uuid
-from typing import List
+from typing import List, Optional
 
 
 class GuidanceRepository:
     @staticmethod
-    def get_guidances(db: Session, user_id: uuid.UUID = None, guidance_id: uuid.UUID = None) -> list[GuidanceSchemaResponse]:
+    def get_guidances(db: Session, user_id: Optional[uuid.UUID] = None, guidance_id: Optional[uuid.UUID] = None, search_text: Optional[str] = None) -> list[GuidanceSchemaResponse]:
         arguments = {}
         if guidance_id is not None:
             arguments['id'] = guidance_id
         if user_id is not None:
             arguments['owner_id'] = user_id
-        guidances = db.query(Guidance).filter_by(**arguments).all()
+
+        query = db.query(Guidance).filter_by(**arguments)
+
+        if search_text:
+            search_text = f"%{search_text}%"
+            query = query.filter(
+                or_(
+                    Guidance.city.ilike(search_text),
+                    Guidance.state.ilike(search_text),
+                    Guidance.description.ilike(search_text),
+                    Guidance.title.ilike(search_text)
+                )
+            )
+
+        guidances = query.all()
         response = []
 
         for guidance in guidances:

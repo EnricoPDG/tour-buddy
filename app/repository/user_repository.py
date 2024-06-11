@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 from loguru import logger
-from models import User
+from models import User, GuidanceSubscription
 from schema import UserSchemaRequest, UserSchemaResponse
 from uuid import uuid4, UUID
 from typing import List, Optional
@@ -70,8 +70,7 @@ class UserRepository:
             query = query.filter(
                 or_(
                     User.name.ilike(search_text),
-                    User.username.ilike(search_text),
-                    User.email.ilike(search_text)
+                    User.username.ilike(search_text)
                 )
             )
 
@@ -95,3 +94,15 @@ class UserRepository:
             response.append(user_response)
 
         return response
+
+    @staticmethod
+    def follow_user(db: Session, follower: str, followed: str) -> None:
+        subscription = GuidanceSubscription(
+            id=uuid4(),
+            id_user_follower=follower,
+            id_user_followed=followed
+        )
+
+        db.add(subscription)
+        db.commit()
+        return None

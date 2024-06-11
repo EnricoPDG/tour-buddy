@@ -26,7 +26,8 @@ class GuidanceRepository:
                 or_(
                     Guidance.city.ilike(search_text),
                     Guidance.state.ilike(search_text),
-                    Guidance.description.ilike(search_text)
+                    Guidance.description.ilike(search_text),
+                    Guidance.title.ilike(search_text)
                 )
             )
 

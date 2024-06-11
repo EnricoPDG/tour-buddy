@@ -11,6 +11,7 @@ router = APIRouter(
     prefix="/users"
 )
 
+
 @router.post("", response_model=UserSchemaResponse, status_code=201)
 async def create_user(user: UserSchemaRequest, db: Session = Depends(get_db)):
     try:
@@ -44,7 +45,7 @@ async def fetch_user_profile_by_id(user_id: str, db: Session = Depends(get_db)):
         user = UserRepository.get_user(db=db, user_id=user_id)
         if user is None:
             raise HTTPException(status_code=404, detail=f"Erro: o usuário não foi encontrado")
-        
+
         guidances_concluded_quantity = GuidanceRepository.get_guidances_concluded_quantity(db=db, user_id=user_id)
         rating = RatingRepository.get_user_rating(db=db, user_id=user_id)
         travel_plan_quantity = GuidanceRepository.get_travel_plan_quantity(db=db, user_id=user_id)
@@ -70,8 +71,9 @@ async def fetch_user_profile_by_id(user_id: str, db: Session = Depends(get_db)):
         avatar_url=user.avatar_url,
         state=user.state,
         city=user.city,
-        guideData=guide_data
+        guideData=guide_data,
     )
+
 
 @router.get("/{email}", response_model=UserSchemaResponse, status_code=200)
 async def fetch_user_profile_by_email(email: str, db: Session = Depends(get_db)):
@@ -106,14 +108,15 @@ async def upload_avatar_image(email: str, file: UploadFile = File(...), db: Sess
         avatar_url = UserRepository.upload_avatar_url(db=db, email=email, avatar_url=s3_image_url)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"error: {e}")
-    
+
     logger.info(f"User avatar_url: {avatar_url}")
     return {"avatar_url": avatar_url}
 
+
 @router.get("", response_model=List[UserSchemaResponse], status_code=200)
-async def search_users(search_text: Optional[str] = None, db: Session = Depends(get_db)):
+async def search_users(searched_text: Optional[str] = None, db: Session = Depends(get_db)):
     try:
-        users = UserRepository.search_users(db=db, search_text=search_text)
+        users = UserRepository.search_users(db=db, search_text=searched_text)
         if not users:
             raise HTTPException(status_code=404, detail="No users found")
     except Exception as e:
@@ -121,3 +124,4 @@ async def search_users(search_text: Optional[str] = None, db: Session = Depends(
 
     logger.info(f"User search response: {users}")
     return users
+

@@ -15,9 +15,9 @@ router = APIRouter(
 
 
 @router.get("", response_model=List[GuidanceSchemaResponse], status_code=201)
-async def get_guidances(db: Session = Depends(get_db), search: Optional[str] = Query(None)):
+async def get_guidances(db: Session = Depends(get_db), searched_text: Optional[str] = None):
     try:
-        guidances = GuidanceRepository.get_guidances(db=db, search_text=search)
+        guidances = GuidanceRepository.get_guidances(db=db, search_text=searched_text)
         if guidances is None:
             raise HTTPException(status_code=500, detail=f"error: something went wrong")
     except Exception as e:

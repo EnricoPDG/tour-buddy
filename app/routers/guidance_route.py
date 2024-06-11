@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session
 from schema import GuidanceSchemaResponse, GuidanceSchemaRequest, GuidanceScheduleSchemaRequest, \
     GuidanceScheduleSchemaResponse
-from typing import List
+from typing import List, Optional
 from repository import GuidanceRepository
 from database import get_db
 from loguru import logger
@@ -15,9 +15,9 @@ router = APIRouter(
 
 
 @router.get("", response_model=List[GuidanceSchemaResponse], status_code=201)
-async def get_guidances(db: Session = Depends(get_db)):
+async def get_guidances(db: Session = Depends(get_db), searched_text: Optional[str] = None):
     try:
-        guidances = GuidanceRepository.get_guidances(db=db)
+        guidances = GuidanceRepository.get_guidances(db=db, search_text=searched_text)
         if guidances is None:
             raise HTTPException(status_code=500, detail=f"error: something went wrong")
     except Exception as e:

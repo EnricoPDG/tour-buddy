@@ -101,13 +101,19 @@ class GuidanceRepository:
     
     @staticmethod
     def create_guidance(db: Session, guidance_data: GuidanceSchemaRequest) -> GuidanceSchemaResponse:
+        valor = None
+        if guidance_data.approximately_value is not None:
+            valor = guidance_data.approximately_value
+        if guidance_data.approximatelyValue is not None:
+            valor = guidance_data.approximately_value
+
         new_guidance = Guidance(
             id=uuid.uuid4(),
             title=guidance_data.title,
             description=guidance_data.description,
             state=guidance_data.state,
             city=guidance_data.city,
-            approximately_value=guidance_data.approximately_value,
+            approximately_value=valor,
             owner_id=guidance_data.owner_id,
         )
         db.add(new_guidance)

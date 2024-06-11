@@ -53,7 +53,8 @@ class GuidanceRepository:
                 id=holder.id,
                 name=holder.name,
                 username=holder.username,
-                image=holder.avatar_url
+                image=holder.avatar_url,
+                cellphone_number=holder.cellphone_number
             )
 
             guidance_response = GuidanceSchemaResponse(

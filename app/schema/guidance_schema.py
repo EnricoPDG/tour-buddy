@@ -9,7 +9,8 @@ class HolderSchema(BaseModel):
     id: UUID
     name: str
     username: str
-    image: Optional[str] = None
+    image: Optional[str] = None,
+    cellphone_number: Optional[str] = None
 
 
 class GuidanceSchemaBase(BaseModel):

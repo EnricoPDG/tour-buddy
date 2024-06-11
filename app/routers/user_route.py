@@ -118,8 +118,6 @@ async def upload_avatar_image(email: str, file: UploadFile = File(...), db: Sess
 async def search_users(searched_text: Optional[str] = None, db: Session = Depends(get_db)):
     try:
         users = UserRepository.search_users(db=db, search_text=searched_text)
-        if not users:
-            raise HTTPException(status_code=404, detail="No users found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {e}")
 

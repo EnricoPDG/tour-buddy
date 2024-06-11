@@ -18,7 +18,7 @@ class GuidanceSchemaBase(BaseModel):
     description: Optional[str] = None
     state: str
     city: Optional[str] = None
-    approximately_value: Optional[float]
+    approximatelyValue: Optional[float]
     destinations: List[g.GuidanceDestinationSchemaBase]
 
 

@@ -79,7 +79,7 @@ class GuidanceRepository:
                 rating=avg_rating,
                 state=guidance.state,
                 city=guidance.city,
-                approximately_value=guidance.approximately_value,
+                approximatelyValue=guidance.approximately_value,
                 holder=holder_response,
                 destinations=destination_responses
             )
